@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 import express from "express";
 import { Job } from "./job";
 import { LoggerHttp, Logger } from "./logger";
@@ -9,7 +7,7 @@ import { addMessagesBulk } from "./db";
 const smsJob = Job(sendSMS);
 
 const app = express();
-const port = 8085;
+const port = process.env.APP_PORT;
 
 app.use(LoggerHttp);
 app.get("/", (req, res) => {
