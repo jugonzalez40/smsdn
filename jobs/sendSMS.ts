@@ -1,21 +1,30 @@
-import twilio from "twilio";
-import { TMessage, addMessageSent, getMessages } from "../db";
+import twilio, { Twilio } from "twilio";
+import { TMessage, addMessageSent, getAuthCodeTwilio, getMessages } from "../db";
 import { Logger } from "../logger";
 
-// const accountSid = "AC30fcf75234816737f1d3cc70678dfe07";
-// const authToken = "a6f3ba5bdd7277e4a09fc81bfd8a2dfc";
-// const from = "+12294695809";
-// const to = "+573197053513";
-
-const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM, TWILIO_TO } =
+const { TWILIO_ACCOUNT_SID, TWILIO_FROM, TWILIO_TO } =
   process.env;
 
-const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+let client: null | Twilio = null; 
+
+const getClient = async () => {
+  const authToken = await getAuthCodeTwilio();
+  if(!authToken) {
+    Logger.error('No auth token');
+    return;
+  }
+
+  client = twilio(TWILIO_ACCOUNT_SID, authToken);
+}
 
 const getRandomMessage = async (): Promise<TMessage | null> => {
   try {
+    
     const messages = await getMessages();
-    if(!messages?.length) return null;
+    if(!messages?.length) {
+      Logger.error('No auth messages list');
+      return null;
+    }
 
     const randomIndex = Math.ceil(Math.random() * (messages.length - 1));
     const randomMessage = messages[randomIndex];
@@ -31,10 +40,13 @@ const getRandomMessage = async (): Promise<TMessage | null> => {
 
 const sendSMS = async () => {
   try {
+    if(!client) {
+      await getClient();
+    }
     const message = await getRandomMessage();
     // return;
     if (!message) return;
-    const smsMessage = await client.messages.create({
+    const smsMessage = await (client as Twilio).messages.create({
       body: message?.text,
       from: TWILIO_FROM,
       to: TWILIO_TO as string,
@@ -43,7 +55,6 @@ const sendSMS = async () => {
     Logger.info(`TWILIO STATUS CODE => ${smsMessage.status}`);
     addMessageSent(message);
 
-    
   } catch (error) {
     Logger.error('Error sending message');
     Logger.error(error);

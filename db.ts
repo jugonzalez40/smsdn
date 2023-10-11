@@ -40,4 +40,15 @@ const addMessagesBulk = (messages: string[]) => {
   
 };
 
-export { getMessages, addMessageSent, addMessagesBulk };
+const getAuthCodeTwilio = async () => {
+  try {
+    const authTwilio = await pb.collection("auth_twilio").getFullList<{auth_code: string}>();
+    const authCode = authTwilio[0]["auth_code"];
+    return authCode;
+  } catch (error) {
+    Logger.error(error);
+    return null;
+  }
+}
+
+export { getMessages, addMessageSent, addMessagesBulk, getAuthCodeTwilio };

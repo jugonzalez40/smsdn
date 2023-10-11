@@ -77,8 +77,10 @@ app.get("/bulk", (req, res) => {
   res.send("BULK");
 });
 
-
-
+app.get("/sendsms", (req, res) => {
+  sendSMS();
+  res.send("sms sending...");
+});
 
 
 app.listen(port, () => {

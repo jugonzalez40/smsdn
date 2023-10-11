@@ -3,7 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun index.ts | pino-pretty"
+    "dev": "NODE_ENV=development && bun index.ts | pino-pretty",
+    "prod": "NODE_ENV=production && bun index.ts | pino-pretty"
   },
   "devDependencies": {
     "@types/eventsource": "^1.1.12",
