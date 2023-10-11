@@ -21,7 +21,7 @@ const Job = (action: () => Promise<void>) => {
     action();
   };
 
-  const task = cron.schedule(process.env.CRON_SHEDULE as string, player, {
+  const task = cron.schedule("0 10,15,21 * * *" as string, player, {
     scheduled: false,
     timezone: "America/Bogota",
   });
