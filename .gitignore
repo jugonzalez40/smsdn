@@ -174,3 +174,5 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 
+pocketbase_0.18.10_darwin_amd64/pb_data/
+pocketbase_0.18.10_darwin_amd64/pb_migrations/
