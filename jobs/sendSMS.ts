@@ -14,6 +14,10 @@ const getClient = async () => {
     return;
   }
 
+  Logger.info("Twilio credentials");
+  Logger.info(TWILIO_ACCOUNT_SID);
+  Logger.info(authToken);
+
   client = twilio(TWILIO_ACCOUNT_SID, authToken);
 }
 
